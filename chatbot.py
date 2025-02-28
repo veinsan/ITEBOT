@@ -131,7 +131,6 @@ answers = {
     """
 }
 
-# Start
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     gif = open(r'C:\Users\riant\Documents\ITEBOT\Welcome.gif', 'rb')
@@ -139,7 +138,6 @@ def send_welcome(message):
     gif.close()
     bot.reply_to(message, "Gunakan /help untuk melihat perintah yang tersedia. ᵔ ᵕ ᵔ")
 
-# Help
 @bot.message_handler(commands=['help'])
 def send_help(message):
     help_text = (
@@ -154,23 +152,19 @@ def send_help(message):
     )
     bot.reply_to(message, help_text)
 
-# Info
 @bot.message_handler(commands=['info'])
 def send_info(message):
     bot.reply_to(message, "Bot ini dibuat oleh kelompok 2 sebagai akses informasi Desa Cilembu yang merupakan implementasi proyek kuliah Pancasila ITB.")
 
-# Status 
 @bot.message_handler(commands=['status'])
 def send_status(message):
     bot.reply_to(message, "Bot sedang online")
 
-# Time 
 @bot.message_handler(commands=['time'])
 def send_time(message):
     current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     bot.reply_to(message, f"Waktu saat ini adalah : {current_time}")
 
-# About
 @bot.message_handler(commands=['about'])
 def send_about(message):
     about_image = open(r'C:\Users\riant\Documents\ITEBOT\About.jpg', 'rb')
@@ -185,12 +179,10 @@ def send_about(message):
     bot.send_photo(message.chat.id, about_image, caption=caption)
     about_image.close()
 
-# Contact
 @bot.message_handler(commands=['contact'])
 def send_contact(message):
     bot.reply_to(message, "https://t.me/zahraula")
 
-# Ask
 @bot.message_handler(commands=['ask'])
 def ask_question(message):
     markup = types.InlineKeyboardMarkup()
@@ -198,14 +190,12 @@ def ask_question(message):
         markup.add(types.InlineKeyboardButton(text=question, callback_data=f"answer_{number}"))
     bot.send_message(message.chat.id, "Pilih pertanyaan untuk melihat jawabannya:", reply_markup=markup)
 
-# Handle callback query when a button is clicked
 @bot.callback_query_handler(func=lambda call: call.data.startswith('answer_'))
 def handle_question_answer(call):
     question_number = int(call.data.split('_')[1])
     answer_text = answers.get(question_number, "Maaf, tidak ada jawaban untuk pertanyaan ini.")
     send_long_message(call.message.chat.id, answer_text, parse_mode='HTML')
 
-# Long message handler
 def send_long_message(chat_id, text, parse_mode=None):
     MAX_MESSAGE_LENGTH = 4096
     while len(text) > MAX_MESSAGE_LENGTH:
@@ -216,12 +206,10 @@ def send_long_message(chat_id, text, parse_mode=None):
         text = text[split_pos:].lstrip()
     bot.send_message(chat_id, text, parse_mode=parse_mode)
 
-# Error handling
 @bot.message_handler(func=lambda message: True)
 def unknown_command(message):
     bot.reply_to(message, "Maaf, Saya tidak bisa mengenali perintah tersebut (╥﹏╥). Gunakan /help untuk melihat perintah yang tersedia.")
 
 print("Bot is running...")
 
-# Keep the bot running
 bot.polling()
